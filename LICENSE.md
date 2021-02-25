@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2019 Greg Smith
+Copyright (c) 2019 Greg Smith, 2021 qb20nh & GotPrgmer
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
