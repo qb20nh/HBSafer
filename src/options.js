@@ -32,6 +32,7 @@ function digestBlacklistURL(url) {
   }
   var scheme = uri.scheme;
   var hostname = uri.host;
+  var returnValue;
   if (hostname.length > 0) {
     var hostLevel = hostname.split(".").length;
     var pathname = uri.path;
@@ -42,10 +43,48 @@ function digestBlacklistURL(url) {
     var domain = psl.parse(hostname).domain || hostname;
     var hosthash = SparkMD5.hash(hostname);
     var pathhash = SparkMD5.hash(pathname);
-    return `${scheme}:${domain[0]}${domain.length}:${hostLevel}:${hosthash}:${pathLevel}:${pathhash}`.toLowerCase();
+    console.log(scheme, hostname, pathname);
+    returnValue = `${scheme}:${domain[0]}${domain.length}:${hostLevel}:${hosthash}`;
+    if (pathname.length < 1) {
+      returnValue += "::";
+    } else {
+      returnValue += `:${pathLevel}:${pathhash}`;
+    }
   } else {
-    return `${scheme}::`;
+    returnValue = `${scheme}::`;
   }
+  return returnValue;
+}
+
+function parseBlacklistItem(string) {
+  var scheme,
+    domainChar,
+    domainLength,
+    hostLevel,
+    hostHash,
+    pathLevel,
+    pathHash;
+  var values = string.slice(0, -2).split(":");
+  scheme = values[0];
+  if (values.length > 1) {
+    domainChar = values[1][0];
+    domainLength = values[1].slice(1);
+    hostLevel = values[2];
+    hostHash = values[3];
+    if (values.length > 4) {
+      pathLevel = values[4];
+      pathHash = values[5];
+    }
+  }
+  return {
+    scheme,
+    domainChar,
+    domainLength,
+    hostLevel,
+    hostHash,
+    pathLevel,
+    pathHash,
+  };
 }
 
 chrome.storage.sync.get("blacklist", (data) => {
