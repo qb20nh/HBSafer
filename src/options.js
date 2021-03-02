@@ -1,3 +1,7 @@
+import("./lib/spark-md5.min.js");
+import("./lib/psl.min.js");
+import("./lib/uri.all.min.js");
+
 /**
  * Blacklist object data structure:
  * [
@@ -19,40 +23,42 @@
  */
 
 function digestBlacklistURL(url) {
-  var uri = URI.parse(url);
-  var hostname = uri.host;
-  if (!hostname) {
-    uri = URI.parse("http://" + url);
-    hostname = uri.host;
+  if (typeof url === "undefined" || url.length < 1) {
+    throw new Error("Must be a valid URL or domain");
   }
-  var hostpart = hostname.split(".").length;
+  var uri = URI.parse(url);
+  if (typeof uri.scheme === "undefined" || uri.scheme.length < 1) {
+    uri = URI.parse("http://" + url);
+  }
+  if (uri.host.length < 1) {
+    throw new Error("Must be a valid URL or domain");
+  }
+  var scheme = uri.scheme;
+  var hostname = uri.host;
+  var hostLevel = hostname.split(".").length;
   var pathname = uri.path;
   if (pathname.startsWith("/")) pathname = pathname.slice(1);
   if (pathname.endsWith("/")) pathname = pathname.slice(0, pathname.length - 1);
-  var pathpart = pathname.split("/").length;
+  var pathLevel = pathname.split("/").length;
   var domain = psl.parse(hostname).domain || hostname;
   var hosthash = SparkMD5.hash(hostname);
   var pathhash = SparkMD5.hash(pathname);
-  return `${domain[0]}${
-    domain.length - 1
-  }:${hostpart}:${hosthash}:${pathpart}:${pathhash}`;
+  console.log(`${scheme},${domain},${hostname},${pathname}`);
+  return `${scheme}:${domain[0]}${domain.length}:${hostLevel}:${hosthash}:${pathLevel}:${pathhash}`.toLowerCase();
 }
 
 chrome.storage.sync.get("blacklist", (data) => {
   if (!data.blacklist) {
     throw new Error("expected blacklist in storage");
   }
+  console.log("blacklist get", data.blacklist);
 
   const blacklistEl = document.getElementById("blacklist");
   blacklistEl.value = data.blacklist.join("\n");
 });
 
-const saveEl = document.getElementById("save");
-saveEl.addEventListener("click", function () {
-  const blacklistEl = document.getElementById("blacklist");
-  const blacklist = blacklistEl.value.trim().split("\n");
-  chrome.storage.sync.set({ blacklist });
-
+const saveEl = document.getElementById("url");
+saveEl.addEventListener("submit", function () {
   const savedNotificationEl = document.getElementById("saved-notification");
   savedNotificationEl.className = "flash";
   savedNotificationEl.offsetWidth;
