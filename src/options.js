@@ -30,21 +30,22 @@ function digestBlacklistURL(url) {
   if (typeof uri.scheme === "undefined" || uri.scheme.length < 1) {
     uri = URI.parse("http://" + url);
   }
-  if (uri.host.length < 1) {
-    throw new Error("Must be a valid URL or domain");
-  }
   var scheme = uri.scheme;
   var hostname = uri.host;
-  var hostLevel = hostname.split(".").length;
-  var pathname = uri.path;
-  if (pathname.startsWith("/")) pathname = pathname.slice(1);
-  if (pathname.endsWith("/")) pathname = pathname.slice(0, pathname.length - 1);
-  var pathLevel = pathname.split("/").length;
-  var domain = psl.parse(hostname).domain || hostname;
-  var hosthash = SparkMD5.hash(hostname);
-  var pathhash = SparkMD5.hash(pathname);
-  console.log(`${scheme},${domain},${hostname},${pathname}`);
-  return `${scheme}:${domain[0]}${domain.length}:${hostLevel}:${hosthash}:${pathLevel}:${pathhash}`.toLowerCase();
+  if (hostname.length > 0) {
+    var hostLevel = hostname.split(".").length;
+    var pathname = uri.path;
+    if (pathname.startsWith("/")) pathname = pathname.slice(1);
+    if (pathname.endsWith("/"))
+      pathname = pathname.slice(0, pathname.length - 1);
+    var pathLevel = pathname.split("/").length;
+    var domain = psl.parse(hostname).domain || hostname;
+    var hosthash = SparkMD5.hash(hostname);
+    var pathhash = SparkMD5.hash(pathname);
+    return `${scheme}:${domain[0]}${domain.length}:${hostLevel}:${hosthash}:${pathLevel}:${pathhash}`.toLowerCase();
+  } else {
+    return `${scheme}::`;
+  }
 }
 
 chrome.storage.sync.get("blacklist", (data) => {
