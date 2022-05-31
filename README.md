@@ -1,3 +1,5 @@
-<img src="header.svg" />
+# HBSafer
 
-A Chrome extension to blacklist URLs from entering Chrome's history.
+![HBSafer Logo](header.svg)
+
+A Chromium extension to blacklist URLs from entering Browser's history.

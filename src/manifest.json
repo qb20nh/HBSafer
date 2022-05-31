@@ -1,8 +1,8 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "HBSafer",
   "version": "1.0.0",
-  "description": "Blacklists URLs from entering Chrome's history.",
+  "description": "Blacklists URLs from entering Browser's history.",
   "icons": {
     "16": "images/icon-16px.png",
     "32": "images/icon-32px.png",
