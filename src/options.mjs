@@ -3,6 +3,11 @@ import('./lib/uri.all.min.js')
 
 import { load } from './common.mjs'
 
+/**
+ * Builds blacklist string from parsable url
+ * @param {string} url 
+ * @returns {string} blacklist string
+ */
 function build (url) {
   if (typeof url === 'undefined' || url.length < 1) {
     throw new Error('Must be a valid URL or domain')
@@ -31,8 +36,17 @@ function build (url) {
   return returnValue
 }
 
+/**
+ * Get 128 bits of randomness
+ * @returns {string} hex string of random values
+ */
 const getRandomString = () => [...crypto.getRandomValues(new Uint8Array(16))].map(n => ('0' + n.toString(16)).substring(-2)).join('')
 
+/**
+ * Saves list of blacklist items to browser storage
+ * @param {Array<string>} blacklist list of blacklist items
+ * @returns Future which completes when browser finishes save operation
+ */
 const save = (blacklist) => new Promise((res, rej) => {
   try {
     res(chrome.storage.sync.set({ blacklist }))
@@ -41,13 +55,19 @@ const save = (blacklist) => new Promise((res, rej) => {
   }
 })
 
+/**
+ * Adds a url to the list of blacklist items and saves it to browser storage
+ * @param {string} rawUrlInput url to add
+ */
 const add = async (rawUrlInput) => {
   const blacklist = await load()
   blacklist.push(build(rawUrlInput))
   await save(blacklist)
 }
 
+// Display for blacklist items
 const blacklistEl = document.getElementById('blacklist')
+// Load from browser storage into display element when page loads
 load().then((blacklist) => {
   console.log('blacklist get', blacklist)
   blacklist.forEach((item, index) => {
@@ -58,7 +78,9 @@ load().then((blacklist) => {
   })
 })
 
+// A url input field
 const saveEl = document.getElementById('url')
+// Handle submit event for the form encompassing the input field
 saveEl.closest('form').addEventListener('submit', function (e) {
   e.preventDefault()
   add(saveEl.value)

@@ -1,3 +1,7 @@
+/**
+ * Load a blacklist items from the browser storage.
+ * @returns {Promise<List<String>>} Future which resolves into a desired data
+ */
 export const load = () => new Promise((res, rej) => {
   chrome.storage.sync.get('blacklist', (data) => {
     if (!data.blacklist) {
@@ -7,6 +11,11 @@ export const load = () => new Promise((res, rej) => {
   })
 })
 
+/**
+ * Parses a blacklist string into an object for ease of use
+ * @param {*} blacklistString A blacklist string to parse
+ * @returns Object of named parts
+ */
 export const parse = (blacklistString) => {
   let scheme,
     hostHash,
