@@ -1,214 +1,225 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>HBSafer</title>
-    <link
-      href="https://fonts.googleapis.com/css?family=Nunito|Fira+Mono|Titillium+Web:700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
+<html lang="en">
 
-        --var-bgcolor: #0d1b1e;
-        --var-textcolor: #cfe0ff;
-        --var-primary: #cfe0ff;
-      }
+<head>
+  <title>HBSafer</title>
+  <link href="https://fonts.googleapis.com/css?family=Nunito|Fira+Mono|Titillium+Web:700&display=swap"
+    rel="stylesheet" />
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
 
-      body {
-        font-size: 1rem;
-        color: var(--var-textcolor);
-        background: var(--var-bgcolor);
-        font-family: "Nunito", sans-serif;
-      }
+      --var-bgcolor: #000000;
+      --var-textcolor: #cfe0ff;
+      --var-primary: #cfe0ff;
+    }
 
-      .content {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-      }
+    body {
+      font-size: 1rem;
+      color: var(--var-textcolor);
+      background: var(--var-bgcolor);
+      font-family: "Nunito", sans-serif;
+    }
 
-      .container {
-        max-width: 540px;
-        margin: 0 auto;
-        padding: 0 16px;
-      }
+    .content {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
 
-      main,
-      footer {
-        overflow: auto;
-      }
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
 
-      main {
-        flex: 1;
-      }
+    main,
+    footer {
+      overflow: auto;
+    }
 
-      footer {
-        filter: contrast(1.05) brightness(0.95);
-        background: var(--var-bgcolor);
-        color: var(--var-textcolor);
-      }
+    main {
+      flex: 1;
+    }
 
-      mark.decorator {
-        background: none;
-        color: #484848;
-        user-select: none;
-        pointer-events: none;
-      }
+    footer {
+      filter: contrast(1.05) brightness(0.95);
+      background: var(--var-bgcolor);
+      color: var(--var-textcolor);
+    }
 
-      h1 {
-        font-family: "Titillium Web", sans-serif;
-        color: #2f100f;
-        display: flex;
-        align-items: center;
-        font-size: 3rem;
-      }
+    mark.decorator {
+      background: none;
+      color: #484848;
+      user-select: none;
+      pointer-events: none;
+    }
 
-      textarea {
-        margin: 0;
-        font-family: "Fira Mono", monospace;
-        display: block;
-        width: 100%;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: inherit;
-        background-color: var(--var-bgcolor);
-        background-clip: padding-box;
-        border: 1px solid var(--var-primary);
-        border-radius: 0.25rem;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        overflow: auto;
-        resize: none;
-        min-height: 12rem;
-      }
+    h1 {
+      font-family: "Titillium Web", sans-serif;
+      color: #5752fe;
+      display: flex;
+      align-items: center;
+      font-size: 3rem;
+    }
 
-      button {
-        background-color: var(--var-bgcolor);
-        border-radius: 0.25rem;
-        border: 1px solid var(--var-textcolor);
-        color: var(--var-textcolor);
-        cursor: pointer;
-        display: inline-block;
-        font-family: "Titillium Web", sans-serif;
-        font-size: 1rem;
-        font-weight: bold;
-        line-height: 1.5;
-        margin: 0;
-        padding: 0.5rem 1rem;
-        text-align: center;
-        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-          border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        user-select: none;
-        vertical-align: middle;
-        white-space: nowrap;
-      }
+    textarea {
+      margin: 0;
+      font-family: "Fira Mono", monospace;
+      display: block;
+      width: 100%;
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: inherit;
+      background-color: var(--var-bgcolor);
+      background-clip: padding-box;
+      border: 1px solid var(--var-primary);
+      border-radius: 0.25rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      overflow: auto;
+      resize: none;
+      min-height: 12rem;
+    }
 
-      button:hover {
-        background-color: var(--var-textcolor);
-        color: var(--var-bgcolor);
-      }
+    button {
+      background-color: var(--var-bgcolor);
+      border-radius: 0.25rem;
+      border: 1px solid var(--var-textcolor);
+      color: var(--var-textcolor);
+      cursor: pointer;
+      display: inline-block;
+      font-family: "Titillium Web", sans-serif;
+      font-size: 1rem;
+      font-weight: bold;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0.5rem 1rem;
+      text-align: center;
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      user-select: none;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
 
-      a {
-        text-decoration: none;
-        color: white;
-        opacity: 0.7;
-        transition: opacity 200ms ease, color 200ms ease;
-      }
+    button:hover {
+      background-color: var(--var-textcolor);
+      color: var(--var-bgcolor);
+    }
 
-      a:hover {
-        opacity: 1;
-        color: #ff5752;
-      }
+    a {
+      text-decoration: none;
+      color: #fff;
+      opacity: 0.7;
+      transition: opacity 200ms ease, color 200ms ease;
+    }
 
-      .logo {
-        width: 64px;
-        height: 64px;
-        margin-right: 1.25rem;
-      }
+    a:hover {
+      opacity: 1;
+      color: #5752fe;
+    }
 
-      .row {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin: 2rem 0;
-      }
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin-right: 1.25rem;
+    }
 
-      #urls-purged-container {
-        display: none;
-      }
+    .row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 2rem 0;
+    }
 
-      #urls-purged-container.show {
-        display: block;
-      }
+    #urls-purged-container {
+      display: none;
+    }
 
-      #urls-purged,
-      #urls-purged-date {
-        font-family: "Titillium Web", sans-serif;
-        font-weight: bold;
-      }
+    #urls-purged-container.show {
+      display: block;
+    }
 
-      #saved-notification {
-        margin: 0 1rem;
-        font-size: 1rem;
-        opacity: 0;
-        user-select: none;
-        transition: opacity 4s ease;
-      }
+    #urls-purged,
+    #urls-purged-date {
+      font-family: "Titillium Web", sans-serif;
+      font-weight: bold;
+    }
 
-      #saved-notification.flash {
-        opacity: 1;
-        transition: none;
-      }
+    #saved-notification {
+      margin: 0 1rem;
+      font-size: 1rem;
+      opacity: 0;
+      user-select: none;
+      transition: opacity 4s ease;
+    }
 
-      .heart {
-        color: #ff5752;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="content">
-      <main>
-        <div class="container">
-          <h1>
-            <img class="logo" src="images/logo-animated.svg" />
-            HBSafer
-          </h1>
+    #saved-notification.flash {
+      opacity: 1;
+      transition: none;
+    }
+
+    .heart {
+      color: #5752fe;
+    }
+
+    #blacklist {
+      font-family: monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content">
+    <main>
+      <div class="container">
+        <h1>
+          <img class="logo" src="images/logo-animated.svg" />
+          HBSafer
+        </h1>
+        <p>
+          Blacklisted paths <code>scheme[:hostLevel:hostHash:hostSalt[:pathLevel:pathHash:pathSalt]]</code>
+        </p>
+        <form action="#" autocomplete="off">
+          <div class="row">
+            <select id="blacklist" name="blacklist" multiple size="16">
+            </select>
+          </div>
+          <div class="row">
+            <button type="button">Remove</button>
+          </div>
+          <div class="row">
+            <input type="text" id="url" name="url" placeholder="Enter website url here" />
+            <button type="submit">Add</button>
+            <span id="saved-notification">Saved!</span>
+          </div>
           <p>
-            Add one entry per row. Any URL that matches any entry will be
-            prevented from entering your browser history.
+            Examples:
+          <ul>
+            <li><code>reddit.com/r/funny</code></li>
+            <li><code>facebook.com</code></li>
+          </ul>
           </p>
-          <form action="#">
-            <div class="row">
-              <select id="blacklist" name="blacklist" multiple size="16">
-                <option value="0">f***********</option>
-                <option value="1">r*********</option>
-              </select>
-            </div>
-            <div class="row">
-              <input type="url" id="url" name="url" placeholder="example.com" />
-              <span id="saved-notification">Saved!</span>
-            </div>
-          </form>
-        </div>
-      </main>
-      <footer>
-        <div class="container">
-          <p>
-            History Blacklist by
-            <a href="https://github.com/smrq" target="_blank"
-              >Greg Smith (@smrq)</a
-            >
-            <mark class="decorator">|</mark>
-            HBSafer fork by
-            <a href="https://github.com/qb20nh" target="_blank">qb20nh</a>
-          </p>
-        </div>
-      </footer>
-    </div>
-    <script src="options.js"></script>
-  </body>
+        </form>
+      </div>
+    </main>
+    <footer>
+      <div class="container">
+        <p>
+          History Blacklist by
+          <a href="https://github.com/smrq" target="_blank">Greg Smith (@smrq)</a>
+          <mark class="decorator">|</mark>
+          HBSafer fork by
+          <a href="https://github.com/qb20nh" target="_blank">qb20nh</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="options.mjs"></script>
+</body>
+
 </html>
