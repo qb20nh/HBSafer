@@ -13,7 +13,7 @@ export const load = () => new Promise((res, rej) => {
 
 /**
  * Parses a blacklist string into an object for ease of use
- * @param {*} blacklistString A blacklist string to parse
+ * @param {string} blacklistString A blacklist string to parse
  * @returns Object of named parts
  */
 export const parse = (blacklistString) => {
