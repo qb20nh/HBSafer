@@ -1,5 +1,5 @@
-import * as SparkMD5 from './lib/spark-md5.min.js'
-import * as URI from './lib/uri.all.min.js'
+import('./lib/spark-md5.min.js')
+import('./lib/uri.all.min.js')
 
 import { load, parse } from './common.mjs'
 

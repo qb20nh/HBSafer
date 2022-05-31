@@ -7,32 +7,26 @@ export const load = () => new Promise((res, rej) => {
   })
 })
 
-export function parse (blacklistString) {
+export const parse = (blacklistString) => {
   let scheme,
-    hostLevel,
     hostHash,
     hostSalt,
-    pathLevel,
     pathHash,
     pathSalt
   const values = blacklistString.split(':')
   scheme = values[0]
   if (values.length > 1) {
-    hostLevel = values[1]
-    hostHash = values[2]
-    hostSalt = values[3]
-    if (values.length > 4) {
-      pathLevel = values[4]
-      pathHash = values[5]
-      pathSalt = values[6]
+    hostHash = values[1]
+    hostSalt = values[2]
+    if (values.length > 3) {
+      pathHash = values[3]
+      pathSalt = values[4]
     }
   }
   return {
     scheme,
-    hostLevel,
     hostHash,
     hostSalt,
-    pathLevel,
     pathHash,
     pathSalt
   }

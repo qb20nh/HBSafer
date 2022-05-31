@@ -1,5 +1,5 @@
-import * as SparkMD5 from './lib/spark-md5.min.js'
-import * as URI from './lib/uri.all.min.js'
+import('./lib/spark-md5.min.js')
+import('./lib/uri.all.min.js')
 
 import { load } from './common.mjs'
 
@@ -15,25 +15,23 @@ function build (url) {
   const hostname = uri.host
   let returnValue = `${scheme}`
   if (hostname.length > 0) {
-    const hostLevel = hostname.split('.').length
     let pathname = uri.path
     if (pathname.startsWith('/')) pathname = pathname.slice(1)
     if (pathname.endsWith('/')) { pathname = pathname.slice(0, pathname.length - 1) }
-    const pathLevel = pathname.split('/').length
     const hostSalt = getRandomString()
     const hostHash = SparkMD5.hash(hostname + hostSalt)
     const pathSalt = getRandomString()
     const pathHash = SparkMD5.hash(pathname + pathSalt)
     console.log(scheme, hostname, pathname)
-    returnValue += `:${hostLevel}:${hostHash}:${hostSalt}`
+    returnValue += `:${hostHash}:${hostSalt}`
     if (pathname.length > 0) {
-      returnValue += `:${pathLevel}:${pathHash}:${pathSalt}`
+      returnValue += `:${pathHash}:${pathSalt}`
     }
   }
   return returnValue
 }
 
-const getRandomString = () => [...crypto.getRandomValues(new Uint8Array(16))].map(n => ('0' + n.toString(16)).substr(-2)).join('')
+const getRandomString = () => [...crypto.getRandomValues(new Uint8Array(16))].map(n => ('0' + n.toString(16)).substring(-2)).join('')
 
 const save = (blacklist) => new Promise((res, rej) => {
   try {
