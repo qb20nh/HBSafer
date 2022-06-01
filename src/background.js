@@ -1,7 +1,7 @@
+import { load, parse } from './common.mjs'
+
 import('./lib/spark-md5.min.js')
 import('./lib/uri.all.min.js')
-
-import { load, parse } from './common.mjs'
 
 chrome.runtime.onInstalled.addListener(handleRuntimeInstalled)
 chrome.history.onVisited.addListener(handleHistoryVisited)
@@ -32,7 +32,7 @@ function handleHistoryVisited (historyItem) {
 
 /**
  * Removes specific history entry/entries from browser by url string
- * @param {string} url 
+ * @param {string} url
  */
 function purgeUrl (url) {
   chrome.history.deleteUrl({ url })

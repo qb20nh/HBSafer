@@ -1,11 +1,11 @@
+import { load } from './common.mjs'
+
 import('./lib/spark-md5.min.js')
 import('./lib/uri.all.min.js')
 
-import { load } from './common.mjs'
-
 /**
  * Builds blacklist string from parsable url
- * @param {string} url 
+ * @param {string} url
  * @returns {string} blacklist string
  */
 function build (url) {
@@ -47,11 +47,11 @@ const getRandomString = () => [...crypto.getRandomValues(new Uint8Array(16))].ma
  * @param {Array<string>} blacklist list of blacklist items
  * @returns Future which completes when browser finishes save operation
  */
-const save = (blacklist) => new Promise((res, rej) => {
+const save = (blacklist) => new Promise((resolve, reject) => {
   try {
-    res(chrome.storage.sync.set({ blacklist }))
+    resolve(chrome.storage.sync.set({ blacklist }))
   } catch (e) {
-    rej(e)
+    reject(e)
   }
 })
 
@@ -86,6 +86,5 @@ saveEl.closest('form').addEventListener('submit', function (e) {
   add(saveEl.value)
   const savedNotificationEl = document.getElementById('saved-notification')
   savedNotificationEl.className = 'flash'
-  savedNotificationEl.offsetWidth
   savedNotificationEl.className = ''
 })

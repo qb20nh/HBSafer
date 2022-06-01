@@ -2,12 +2,12 @@
  * Load a blacklist items from the browser storage.
  * @returns {Promise<List<String>>} Future which resolves into a desired data
  */
-export const load = () => new Promise((res, rej) => {
+export const load = () => new Promise((resolve, reject) => {
   chrome.storage.sync.get('blacklist', (data) => {
     if (!data.blacklist) {
-      rej('expected blacklist in storage')
+      reject(Error('expected blacklist in storage'))
     }
-    res(data.blacklist)
+    resolve(data.blacklist)
   })
 })
 
@@ -17,21 +17,12 @@ export const load = () => new Promise((res, rej) => {
  * @returns Object of named parts
  */
 export const parse = (blacklistString) => {
-  let scheme,
+  const [scheme,
     hostHash,
     hostSalt,
     pathHash,
-    pathSalt
-  const values = blacklistString.split(':')
-  scheme = values[0]
-  if (values.length > 1) {
-    hostHash = values[1]
-    hostSalt = values[2]
-    if (values.length > 3) {
-      pathHash = values[3]
-      pathSalt = values[4]
-    }
-  }
+    pathSalt] = blacklistString.split(':')
+
   return {
     scheme,
     hostHash,
