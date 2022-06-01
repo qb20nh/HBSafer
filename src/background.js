@@ -1,7 +1,7 @@
 import { load, parse } from './common.mjs'
 
-import('./lib/spark-md5.min.js')
-import('./lib/uri.all.min.js')
+import './lib/spark-md5.min.js'
+import './lib/uri.all.min.js'
 
 chrome.runtime.onInstalled.addListener(handleRuntimeInstalled)
 chrome.history.onVisited.addListener(handleHistoryVisited)

@@ -1,7 +1,7 @@
 import { load } from './common.mjs'
 
-import('./lib/spark-md5.min.js')
-import('./lib/uri.all.min.js')
+import './lib/spark-md5.min.js'
+import './lib/uri.all.min.js'
 
 /**
  * Builds blacklist string from parsable url
@@ -27,7 +27,6 @@ function build (url) {
     const hostHash = SparkMD5.hash(hostname + hostSalt)
     const pathSalt = getRandomString()
     const pathHash = SparkMD5.hash(pathname + pathSalt)
-    console.log(scheme, hostname, pathname)
     returnValue += `:${hostHash}:${hostSalt}`
     if (pathname.length > 0) {
       returnValue += `:${pathHash}:${pathSalt}`
@@ -67,24 +66,43 @@ const add = async (rawUrlInput) => {
 
 // Display for blacklist items
 const blacklistEl = document.getElementById('blacklist')
+// Deselect all items when unfocused
+blacklistEl.addEventListener('blur', function (_) {
+  blacklistEl.selectedIndex = -1
+})
 // Load from browser storage into display element when page loads
-load().then((blacklist) => {
-  console.log('blacklist get', blacklist)
+const loadList = async () => {
+  const blacklist = await load()
+  blacklistEl.replaceChildren()
   blacklist.forEach((item, index) => {
     const blackListItem = document.createElement('option')
-    blackListItem.setAttribute('value', index)
-    blackListItem.innerText = item
+    blackListItem.value = index
+    blackListItem.append(document.createTextNode(item))
     blacklistEl.append(blackListItem)
   })
-})
+}
+loadList()
 
 // A url input field
 const saveEl = document.getElementById('url')
+const savedNotificationEl = document.getElementById('saved-notification')
 // Handle submit event for the form encompassing the input field
-saveEl.closest('form').addEventListener('submit', function (e) {
+const form = saveEl.closest('form')
+form.addEventListener('submit', async function (e) {
   e.preventDefault()
-  add(saveEl.value)
-  const savedNotificationEl = document.getElementById('saved-notification')
+  await add(saveEl.value)
+  form.reset()
+  loadList()
   savedNotificationEl.className = 'flash'
   savedNotificationEl.className = ''
+})
+
+// Remove button
+const removeEl = document.getElementById('remove')
+// Remove selected items
+removeEl.addEventListener('click', async function (_) {
+  const itemsToRemove = [...blacklistEl.selectedOptions].map((e) => e.childNodes[0].nodeValue)
+  const items = await load()
+  await save(items.filter((item) => !itemsToRemove.includes(item)))
+  loadList()
 })
