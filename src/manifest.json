@@ -13,8 +13,8 @@
   },
   "author": "QB20NH <human@qb20nh.dev>",
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js",
+    "type": "module"
   },
   "homepage_url": "https://github.com/qb20nh/HBSafer",
   "options_page": "options.html",
