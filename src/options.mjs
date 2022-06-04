@@ -2,6 +2,7 @@ import { load } from './common.mjs'
 
 import './lib/spark-md5.min.js'
 import './lib/uri.all.min.js'
+import './lib/psl.min.js'
 
 /**
  * Builds blacklist string from parsable url
@@ -9,11 +10,11 @@ import './lib/uri.all.min.js'
  * @returns {string} blacklist string
  */
 function build (url) {
-  if (typeof url === 'undefined' || url.length < 1) {
+  if (url?.length ?? 0 < 1) {
     throw new Error('Must be a valid URL or domain')
   }
   let uri = URI.parse(url)
-  if (typeof uri.scheme === 'undefined' || uri.scheme.length < 1) {
+  if (uri.scheme?.length ?? 0 < 1) {
     uri = URI.parse('http://' + url)
   }
   const scheme = uri.scheme
