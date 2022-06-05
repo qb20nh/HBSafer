@@ -1,4 +1,4 @@
-import { load, parse } from './common.mjs'
+import { load, parse, hash } from './common.mjs'
 
 import './lib/spark-md5.min.js'
 import './lib/uri.all.min.js'
@@ -40,19 +40,36 @@ function purgeUrl (url) {
 
 /**
  * Compare currently visited page's url to the list of preset blacklist items and check if at least one matches
- * @param {*} blacklist Blacklist items ex. facebook.com reddit.com/r/funny www.youtube.com
- * @param {*} url  ex. https://www.facebook.com http://reddit.com/
+ * @param {string} blacklistString Blacklist items ex. facebook.com reddit.com/r/funny www.youtube.com
+ * @param {string} urlString  ex. https://www.facebook.com http://reddit.com/
  * 1. Separate blacklist item into domain and path parts
  * 2. parse current url for domain and path
  * 3. compare both url and path and exclude only if both match
  */
-function isBlacklisted (blacklist, url) {
-  return [ // TODO: replace this with correct data, use load function from common.mjs
-    'r8:2:1fd7de7da0fce4963f775a5fdb894db5:2:7ae7acb3afe3353f4e61b4746e02ddf6',
-    'f9:3:660328a7f9004d462085aa67a82065db:1:d41d8cd98f00b204e9800998ecf8427e'
-  ].some((line) => {
-    console.log('Hash of BL url:', SparkMD5.hash(line))
-    console.log('Hash of visited:', SparkMD5.hash(url))
-    return url.toLowerCase().includes(line.toLowerCase())
+async function isBlacklisted (blacklistString, urlString) {
+  /**
+   *
+   * @param {{hostHash: string, hostSalt: string}} hostInfo
+   * @param {string} urlString
+   * @returns {boolean}
+   */
+  const hostMatch = ({ hostHash, hostSalt }, urlString) => {
+    const { hostname } = URI.parse(urlString)
+    const hostnameSanitized = hostname.replaceAll('.', ' ').trim().replaceAll(' ', '.') // cheese
+    const parts = hostnameSanitized.split('.')
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const subpart = parts.slice(i).join('.')
+      const [subpartHash] = hash(subpart, hostSalt)
+      if (subpartHash === hostHash) return true
+    }
+    return false
+  }
+  const pathMatch = ({ hostHash, hostSalt }, urlString) => {
+
+  }
+
+  return (await load()).some((line) => {
+    const blacklist = parse(line)
+    return hostMatch(blacklist, urlString) && (!blacklist.pathHash && pathMatch(blacklist, urlString))
   })
 }

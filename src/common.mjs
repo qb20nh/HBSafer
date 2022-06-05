@@ -31,3 +31,19 @@ export const parse = (blacklistString) => {
     pathSalt
   }
 }
+
+/**
+ * Get 128 bits of randomness
+ * @returns {string} hex string of random values
+ */
+const getRandomString = () => [...crypto.getRandomValues(new Uint8Array(16))].map(n => ('0' + n.toString(16)).substring(-2)).join('')
+
+/**
+ * generate random salt and then compute hash from given value and salt
+ * @param {string} value
+ * @returns {[string, string]} array of hash and salt
+ */
+export const hash = (value, salt = getRandomString()) => {
+  const hashValue = SparkMD5.hash(value + salt)
+  return [hashValue, salt]
+}
