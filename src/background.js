@@ -1,4 +1,4 @@
-import { load, parse, hash } from './common.mjs'
+import { loadBlacklist, parseBlacklistString, hash } from './common.mjs'
 
 import './lib/spark-md5.min.js'
 import './lib/uri.all.min.js'
@@ -23,7 +23,7 @@ function handleRuntimeInstalled (details) {
  * @param {*} historyItem History entry of just visited page
  */
 function handleHistoryVisited (historyItem) {
-  load().then((blacklist) => {
+  loadBlacklist().then((blacklist) => {
     if (isBlacklisted(blacklist, historyItem.url)) {
       purgeUrl(historyItem.url)
     }
@@ -47,16 +47,33 @@ function purgeUrl (url) {
  * 3. compare both url and path and exclude only if both match
  */
 async function isBlacklisted (blacklistString, urlString) {
+  const visitedUri = URI.parse(urlString)
+
+  // Prevent extension's own url from getting logged into browser history
+  // Note: `extension` scheme is for viewable pages, while `chrome-extension` is for background pages
+  if (visitedUri.scheme === 'extension' && visitedUri.host === chrome.runtime.id) return true
+
   /**
-   *
-   * @param {{hostHash: string, hostSalt: string}} hostInfo
-   * @param {string} urlString
+   * Check if visited url's scheme matches the blacklist item's scheme
+   * @param {{scheme: string}} blacklist
+   * @param {{scheme: string}} visitedUri
    * @returns {boolean}
    */
-  const hostMatch = ({ hostHash, hostSalt }, urlString) => {
-    const { hostname } = URI.parse(urlString)
-    const hostnameSanitized = hostname.replaceAll('.', ' ').trim().replaceAll(' ', '.') // cheese
-    const parts = hostnameSanitized.split('.')
+  const schemeMatch = ({ scheme }, { scheme: visitedScheme }) => {
+    return scheme === visitedScheme
+    || (scheme === 'http' && visitedScheme === 'https')
+    || (scheme === 'https' && visitedScheme === 'http')
+  }
+
+  /**
+   * Check if visited url's host matches the blacklist item's host
+   * @param {{hostHash: string, hostSalt: string}} hostInfo
+   * @param {{host: string}} visitedUri
+   * @returns {boolean}
+   */
+  const hostMatch = ({ hostHash, hostSalt }, { host }) => {
+    const hostnameNormalized = host.replace(/^\.+|\.+$/g, '');
+    const parts = hostnameNormalized.split('.')
     for (let i = parts.length - 1; i >= 0; i--) {
       const subpart = parts.slice(i).join('.')
       const [subpartHash] = hash(subpart, hostSalt)
@@ -64,12 +81,26 @@ async function isBlacklisted (blacklistString, urlString) {
     }
     return false
   }
-  const pathMatch = ({ hostHash, hostSalt }, urlString) => {
 
+  /**
+   * Check if visited url's path matches the blacklist item's path
+   * @param {{pathHash: string, pathSalt: string}} pathInfo
+   * @param {{path: string}} visitedUri
+   * @returns {boolean}
+   */
+  const pathMatch = ({ pathHash, pathSalt }, { path }) => {
+    const pathNormalized = path.replace(/^\/+|\/+$/g, '');
+    const parts = pathNormalized.split('/')
+    for (let i = 0; i < parts.length; i++) {
+      const subpart = parts.slice(0, i).join('/')
+      const [subpartHash] = hash(subpart, pathSalt)
+      if (subpartHash === pathHash) return true
+    }
+    return false
   }
 
-  return (await load()).some((line) => {
-    const blacklist = parse(line)
-    return hostMatch(blacklist, urlString) && (!blacklist.pathHash && pathMatch(blacklist, urlString))
+  return (await loadBlacklist()).some((line) => {
+    const blacklist = parseBlacklistString(line)
+    return schemeMatch(blacklist, visitedUri) && hostMatch(blacklist, visitedUri) && (!blacklist.pathHash && pathMatch(blacklist, visitedUri))
   })
 }
